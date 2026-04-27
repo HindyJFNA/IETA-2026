@@ -52,13 +52,15 @@ const FILTER_GROUPS = [
   { id: "durationFilter",    label: "Program Duration", cols: ["Program Duration 1","Program Duration 2","Program Duration 3"], hardcoded: ["Up to 2 weeks", "3-10 weeks", "Semester/year"] },
 ];
 
+
+
 // 🔹 Get logo URL
 function getLogoUrl(name) {
-  return `https://raw.githubusercontent.com/tobiattada/ieta/51528aa05b910795fd66b73e868a5b92cd6a4f8e/logos/${encodeURIComponent(name.replace(/[':]/g, "").replace(/\s+/g, " ").trim())}/logo.png`;
+  return `https://raw.githubusercontent.com/HindyJFNA/IETA-2026/94f279545b6672353290be3f45134d2a9727176a/logos/${encodeURIComponent(name.replace(/[':]/g, "").replace(/\s+/g, " ").trim())}/logo.png`;
 }
 
 // 🔹 Load JSON
-fetch("https://raw.githubusercontent.com/tobiattada/ieta/51528aa05b910795fd66b73e868a5b92cd6a4f8e/trip-platform-org-list.json")
+fetch("https://raw.githubusercontent.com/HindyJFNA/IETA-2026/94f279545b6672353290be3f45134d2a9727176a/trip-platform-org-list.json")
   .then(res => res.json())
   .then(json => {
     data = json;
