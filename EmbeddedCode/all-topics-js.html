@@ -1,0 +1,68 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.location.href.indexOf('topic=') === -1) {
+    var span = document.querySelector('a.chzn-single span');
+    if (span) span.textContent = 'All topics';
+  } else {
+    var controls = document.querySelector('#resource-center-controls');
+    if (controls) controls.scrollIntoView();
+  }
+
+  var trigger = document.querySelector('a.chzn-single');
+  if (trigger) {
+    trigger.addEventListener('click', function() {
+      setTimeout(function() {
+        var firstLi = document.querySelector('ul.chzn-results li:first-child');
+        if (firstLi && firstLi.textContent.trim() === 'Topic') {
+          firstLi.textContent = 'All topics';
+        }
+      }, 0);
+    });
+  }
+
+  var alltopics = document.querySelector('ul.chzn-results li:first-child');
+  if (alltopics) {
+    alltopics.addEventListener('click', function() {
+      setTimeout(function() {
+        var span = document.querySelector('a.chzn-single span');
+        if (span) span.textContent = 'All topics';
+      }, 100);
+    });
+  }
+});
+</script>
+<script>
+  document.querySelectorAll('a').forEach(link => {
+    if (link.textContent.trim() === '...') {
+      link.style.display = 'none';
+    }
+  });
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".listing-container .entry.resource-entry").forEach(entry => {
+    const mainLink = entry.querySelector("h3 a");
+
+    if (!mainLink) return;
+
+    entry.addEventListener("click", (e) => {
+      // If the user clicked an actual link, let it behave normally
+      if (e.target.closest("a")) return;
+
+      window.location.href = mainLink.href;
+    });
+
+    // Accessibility + UX
+    entry.setAttribute("role", "button");
+    entry.setAttribute("tabindex", "0");
+
+    entry.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        window.location.href = mainLink.href;
+      }
+    });
+  });
+});
+</script>

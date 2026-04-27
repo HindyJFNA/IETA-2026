@@ -1,0 +1,39 @@
+<script>
+  const modalsub = document.getElementById("modal-subscribe");
+  const modalsubBody = document.getElementById("modal-body-subscribe");
+  const closeBtnsub = modalsub.querySelector(".close");
+
+  document.querySelectorAll(".subscribe-link").forEach(trigger => {
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault(); // ← this stops the scroll-to-top
+      console.log("clicked");
+      modalsub.style.display = "flex"; // show modal
+    });
+  });
+
+  // Close modal
+  closeBtnsub.onclick = () => modalsub.style.display = "none";
+  window.onclick = (e) => {
+    if (e.target === modalsub) modalsub.style.display = "none";
+  };
+</script>
+
+<script>
+  const modalcont = document.getElementById("modal-contact");
+  const modalcontBody = document.getElementById("modal-body-contact");
+  const closeBtnCon = modalcont.querySelector(".close");
+
+  document.querySelectorAll(".contact-link").forEach(trigger => {
+    trigger.addEventListener("click", (e) => {
+      e.preventDefault(); // ← this stops the scroll-to-top
+      console.log("clicked");
+      modalcont.style.display = "flex"; // show modal
+    });
+  });
+
+  // Close modal
+  closeBtnCon.onclick = () => modalcont.style.display = "none";
+  window.onclick = (e) => {
+    if (e.target === modalcont) modalcont.style.display = "none";
+  };
+</script>

@@ -1,0 +1,379 @@
+<div id="trip-planner-custom-code">
+  
+  <div id="popup" class="popup filter-wrapper">
+      <div class="popup-content">
+
+        <div id="openPopup">
+          <p>Show Filters</p><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 4.83337H13M4.92333 8.00004H11.0767M6.84667 11.1667H9.15333" stroke="#545454" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+
+        <button id="clearFiltersBtn">Reset filters <span>×</span></button>
+
+        <div class="filters">
+
+          <div class="audienceFilter"><h5>Audience</h5><div id="audienceFilter" class="filter"></div></div>
+          <div class="demographicFilter"><h5>Community</h5><div id="demographicFilter" class="filter"></div></div>
+          <div class="durationFilter"><h5>Program Duration</h5><div id="durationFilter" class="filter"></div></div>
+          <div class="typeFilter"><h5>Program Type</h5><div id="typeFilter" class="filter"></div></div>
+
+          <a class="close-filters button"><p>Apply filters</p></a>
+        </div>
+      </div>
+  </div>
+
+  <ul id="data-list"></ul>
+
+  <div class="load-more">
+    <button id="loadMoreBtn"></button>
+  </div>
+
+</div>
+
+
+
+
+<script>
+
+let data = [];
+let currentData = [];
+let itemsToShow = 0;
+
+const list = document.getElementById("data-list");
+const loadMoreBtn = document.getElementById("loadMoreBtn");
+const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+let filterChanged = false;
+
+
+const FILTER_GROUPS = [
+  { id: "audienceFilter",    label: "Audience",         cols: ["Program Audience 1","Program Audience 2","Program Audience 3","Program Audience 4"] },
+  { id: "demographicFilter", label: "Demographic",      cols: ["Program Demographic 1","Program Demographic 2","Program Demographic 3"] },
+  { id: "typeFilter",        label: "Program Type",     cols: ["Program Type 1","Program Type 2","Program Type 3"] },
+  { id: "durationFilter",    label: "Program Duration", cols: ["Program Duration 1","Program Duration 2","Program Duration 3"], hardcoded: ["Up to 2 weeks", "3-10 weeks", "Semester/year"] },
+];
+
+// 🔹 Get logo URL
+function getLogoUrl(name) {
+  return `https://raw.githubusercontent.com/tobiattada/ieta/51528aa05b910795fd66b73e868a5b92cd6a4f8e/logos/${encodeURIComponent(name.replace(/[':]/g, "").replace(/\s+/g, " ").trim())}/logo.png`;
+}
+
+// 🔹 Load JSON
+fetch("https://raw.githubusercontent.com/tobiattada/ieta/51528aa05b910795fd66b73e868a5b92cd6a4f8e/trip-platform-org-list.json")
+  .then(res => res.json())
+  .then(json => {
+    data = json;
+    FILTER_GROUPS.forEach(g => createCheckboxes(g.id, g.hardcoded ?? getUniqueValues(g.cols)));
+    renderData(data);
+  })
+  .catch(err => console.error("JSON load error:", err));
+
+// 🔹 Get unique sorted values across columns
+function getUniqueValues(cols) {
+  const skip = new Set(["and", "or", "for", "that"]);
+  const toTitleCase = str => str.split(/(\s+|-)/).map((w, i) =>
+    /\s+/.test(w) || w === '-' ? w :
+    i !== 0 && skip.has(w.toLowerCase()) ? w.toLowerCase() :
+    w[0].toUpperCase() + w.slice(1)
+  ).join('');
+
+  return [...new Set(data.flatMap(item => cols.map(col => item[col]).filter(Boolean).map(v => v.toString().toLowerCase())))]
+    .sort()
+    .map(toTitleCase);
+}
+
+// 🔹 Create checkboxes
+function createCheckboxes(containerId, values) {
+  document.getElementById(containerId).innerHTML = values.map(v => {
+    const display = v.replace(/(^|[\s-])jew\b/gi, (m, p) => p + 'Jew');
+    return `<label><input type="checkbox" value="${v}"> ${display}</label>`;
+  }).join('');
+  wrapLabelText();
+}
+
+// 🔹 Apply filters
+function applyFilters() {
+  itemsToShow = 0;
+  const filtered = data.filter(item =>
+    FILTER_GROUPS.every(g => {
+      const checked = getCheckedValues(g.id);
+      return !checked.length || checked.some(val => g.cols.some(col => item[col]?.toString().toLowerCase() === val));
+    })
+  );
+  renderData(filtered);
+}
+
+// 🔹 Render items (reset = full re-render, false = append next batch)
+function renderData(items, reset = true) {
+  if (reset) { list.innerHTML = ""; itemsToShow = 0; currentData = items; }
+
+  if (!currentData.length) {
+    list.innerHTML = `<li class="no-results"><p>No programs found matching your filters.</p><p>Try adjusting your selections or <a href="#" onclick="clearAllFilters(event)">clear all filters</a>.</p></li>`;
+    loadMoreBtn.style.display = "none";
+    updateClearButtonVisibility();
+    return;
+  }
+
+  const PARTNERS = [
+    { field: "RootOne Partner",              label: "RootOne", link: "https://rootone.org/"  },
+    { field: "Masa Israel Journey Partner",  label: "Masa Israel Journey", link: "https://www.masaisrael.org/"  },
+    { field: "Taglit-Birthright Partner",    label: "Taglit-Birthright", link: "https://www.birthrightisrael.com/" },
+  ];
+
+  // 🔹 Build partner badges HTML
+  function getPartnerBadges(item) {
+    const badges = PARTNERS
+      .filter(p => item[p.field]?.toString().toUpperCase() === "TRUE")
+      .map(p => `
+        <a href="${p.link}" class="partner-badge" target="_blank">
+          <img src="https://cdn.fedweb.org/fed-42/2/fontisto_plane-ticket.png" alt="partner icon">
+          <span>${p.label}</span>
+        </a>`)
+      .join('');
+    return badges ? `<div class="partner-badges">${badges}</div>` : '';
+  }
+
+  currentData.slice(itemsToShow, itemsToShow + 10).forEach(item => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <a href="${item.Website}" target="_blank">
+        <div class="image-wrap">
+          <img src="${getLogoUrl(item["Program Name (for Display)"])}" alt="${item["Program Name (for Display)"]}">
+        </div>
+        <p class="bold">${item["Program Name (for Display)"]}</p>
+        <p>${item["Organization Name"]}</p>
+      </a> ${getPartnerBadges(item)}`;
+    list.appendChild(li);
+  });
+
+  itemsToShow += Math.min(10, currentData.length - itemsToShow);
+  wrapLabelText();
+
+  const done = itemsToShow >= currentData.length;
+  loadMoreBtn.textContent = done ? "Back to Top" : "Load More";
+  loadMoreBtn.classList.toggle("backtotop", done);
+  loadMoreBtn.style.display = "inline-block";
+}
+
+function capitalizeAfterSlash(str) {
+  return str.split('/').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join('/');
+}
+
+function wrapLabelText() {
+  document.querySelectorAll("label").forEach(label => {
+    const textNode = [...label.childNodes].find(n => n.nodeType === Node.TEXT_NODE && n.textContent.trim());
+    if (!textNode) return;
+    const [before, ...rest] = textNode.textContent.trim().split(":");
+    if (!rest.length) return;
+    const b = Object.assign(document.createElement("b"), { textContent: capitalizeAfterSlash(before.trim()) });
+    const span = Object.assign(document.createElement("span"), { textContent: " " + rest.join(":").trim() });
+    label.replaceChild(span, textNode);
+    label.insertBefore(b, span);
+  });
+}
+
+// 🔹 Helpers
+function getCheckedValues(id) {
+  return [...document.querySelectorAll(`#${id} input:checked`)].map(i => i.value.toLowerCase());
+}
+
+function updateClearButtonVisibility() {
+  clearFiltersBtn.style.display = FILTER_GROUPS.some(g => getCheckedValues(g.id).length) ? "flex" : "none";
+}
+
+function updateFilterCounts() {
+  FILTER_GROUPS.forEach(g => {
+    const heading = document.querySelector(`.${g.id} h5`);
+    if (!heading) return;
+    const count = getCheckedValues(g.id).length;
+    heading.textContent = count ? `${g.label} (${count})` : g.label;
+  });
+}
+
+function updateFilterBadge() {
+  const total = FILTER_GROUPS.reduce((sum, g) => sum + getCheckedValues(g.id).length, 0);
+  const badge = openBtn.querySelector("span.filter-count");
+  if (total > 0) {
+    if (badge) {
+      badge.textContent = ` (${total})`;
+    } else {
+      const span = document.createElement("span");
+      span.className = "filter-count";
+      span.textContent = ` (${total})`;
+      openBtn.querySelector("p").appendChild(span);
+    }
+  } else {
+    badge?.remove();
+  }
+}
+
+function clearAllFilters(event) {
+  event?.preventDefault();
+  document.querySelectorAll(FILTER_GROUPS.map(g => `#${g.id} input`).join(", ")).forEach(cb => cb.checked = false);
+  itemsToShow = 0;
+  renderData(data);
+  filterChanged = true;
+  updateClearButtonVisibility();
+  updateFilterCounts();
+  updateFilterBadge();
+}
+
+// 🔹 Events
+loadMoreBtn.addEventListener("click", () => {
+  itemsToShow < currentData.length
+    ? renderData(currentData, false)
+    : document.getElementById("trip-planner-custom-code")?.scrollIntoView({ behavior: "smooth" });
+});
+
+clearFiltersBtn.addEventListener("click", clearAllFilters);
+
+document.addEventListener("change", e => {
+  if (e.target.matches("input[type=checkbox]")) {
+    filterChanged = true;
+    applyFilters();
+    updateClearButtonVisibility();
+    updateFilterCounts();
+    updateFilterBadge();
+  }
+});
+
+
+
+
+
+
+
+
+
+const popup = document.getElementById("popup");
+const filters = document.querySelector(".filters");
+const openBtn = document.getElementById("openPopup");
+const dataList = document.getElementById("data-list");
+
+
+
+// Open filters on page load (desktop only)
+if (window.innerWidth >= 769) {
+  filters.classList.add("active");
+  openBtn.classList.add("active");
+  updateBtnText();
+}
+
+
+function updateBtnText() {
+  const p = openBtn.querySelector("p");
+  const badge = p.querySelector("span.filter-count");
+  p.textContent = filters.classList.contains("active") ? "Hide filters" : "Show filters";
+  if (badge) p.appendChild(badge);
+}
+
+
+function scrollToDataList() {
+  const offset = popupContent.offsetHeight + nav.offsetHeight;
+  const top = dataList.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({ top, behavior: "smooth" });
+}
+
+openBtn.addEventListener("click", () => {
+  const isDesktop = window.innerWidth >= 769;
+  if (isDesktop) {
+    filters.classList.toggle("active");
+    openBtn.classList.toggle("active");
+    if (filters.classList.contains("active")) {
+      dataList.style.marginTop = `${filters.offsetHeight}px`;
+    } else {
+      dataList.style.marginTop = "";
+      if (filterChanged) {
+        scrollToDataList();
+        filterChanged = false;
+      }
+    }
+  } else {
+    popup.classList.toggle("active");
+    filters.classList.toggle("active");
+    //document.body.style.overflow = popup.classList.contains("active") ? "hidden" : "";
+  }
+  updateBtnText();
+});
+
+popup.addEventListener("click", (e) => {
+  if (e.target === popup || e.target.closest("a.close-filters")) {
+    popup.classList.remove("active");
+    filters.classList.remove("active");
+    openBtn.classList.remove("active");
+    updateBtnText();
+    if (filterChanged) {
+      scrollToDataList();
+      filterChanged = false;
+    }
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth >= 769) {
+    filters.classList.add("active");
+    openBtn.classList.add("active");
+  } else {
+    popup.classList.remove("active");
+    filters.classList.remove("active");
+    openBtn.classList.remove("active");
+    //document.body.style.overflow = "";
+  }
+  updateBtnText();
+});
+
+// THIS IS THE STICKY FILTER
+const nav = document.querySelector("nav.navbar");
+const popupContent = document.querySelector(".popup-content");
+let isSticky = false;
+let stickyTriggerY = null;
+
+window.addEventListener("scroll", () => {
+  // Don't apply sticky if filters are open
+  if (filters.classList.contains("active")) {
+    return;
+  }
+
+  const navHeight = nav.offsetHeight;
+  if (!isSticky) {
+    const popupTop = popupContent.getBoundingClientRect().top;
+    if (popupTop <= navHeight) {
+      stickyTriggerY = window.scrollY;
+      isSticky = true;
+      popupContent.classList.add("sticky");
+      popupContent.style.top = `${navHeight}px`;
+      if (window.innerWidth >= 769) {
+        filters.classList.remove("active");
+        openBtn.classList.remove("active");
+        updateBtnText();
+        dataList.style.marginTop = `${popupContent.offsetHeight}px`;
+      }
+    }
+  } else {
+    if (window.scrollY < stickyTriggerY) {
+      isSticky = false;
+      stickyTriggerY = null;
+      popupContent.classList.remove("sticky");
+      popupContent.style.top = "";
+      dataList.style.marginTop = "";
+    } else {
+      popupContent.style.top = `${navHeight}px`;
+    }
+  }
+});
+
+// Filter accordions
+const accordionItems = document.querySelectorAll(
+  ".audienceFilter, .demographicFilter, .durationFilter, .typeFilter"
+);
+
+accordionItems.forEach(item => {
+  const trigger = item.querySelector("h5");
+  trigger.addEventListener("click", () => {
+    accordionItems.forEach(el => {
+      if (el !== item) el.classList.remove("open-filter");
+    });
+    item.classList.toggle("open-filter");
+  });
+});
+
+</script>

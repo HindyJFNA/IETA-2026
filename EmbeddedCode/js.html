@@ -1,0 +1,80 @@
+<script>
+const navbar = document.querySelector('.navbar');
+const navbarPlaceholder = document.createElement('div');
+navbar.parentNode.insertBefore(navbarPlaceholder, navbar.nextSibling);
+let navbarHeight = 0;
+
+window.addEventListener('load', () => {
+  navbarHeight = navbar.offsetHeight;
+  navbarPlaceholder.style.height = navbarHeight + 'px';
+  navbarPlaceholder.style.display = 'none';
+});
+
+window.addEventListener('scroll', () => {
+  const isSticky = window.scrollY >= navbarHeight;
+  navbar.classList.toggle('navbar--sticky', isSticky);
+  navbarPlaceholder.style.display = isSticky ? 'block' : 'none';
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  const path = window.location.pathname;
+
+  const linkMap = {
+    "/research": "research-link",
+    "/trip-planning": "trip-link",
+    "/find-your-trip-partner": "trip-link",
+    "/news-and-events": "news-events-link",
+    "/who-we-are": "who-link"
+  };
+
+  for (const [urlPath, id] of Object.entries(linkMap)) {
+    if (path.includes(urlPath)) {
+      const el = document.getElementById(id);
+      if (el) el.classList.add("active");
+      break; // stop after finding the first match
+    }
+  }
+});
+
+
+// wait for page to load before executing
+window.addEventListener('load', function () {
+
+  const toggleButton = document.querySelector('.navbar__toggle .nav-trigger');
+  const toggleBar = document.querySelector('.navbar__toggle');
+  const toggleBack = document.querySelector('.navbar__toggle .back-button');
+  const navMenu = document.querySelector('.nav-menu');
+
+  toggleButton.addEventListener('click', () => {
+    navMenu.classList.toggle('open');
+    toggleBar.classList.toggle('open-menu');
+    toggleBack.classList.remove('visible');
+    document.querySelectorAll('.has-dropdown').forEach(dropdown => {
+        dropdown.classList.remove('open');
+      });
+
+    // Body scroll lock toggle
+    if (navMenu.classList.contains('open')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    } 
+  });
+
+  const searchToggle = document.querySelector('.search-toggle');
+  const searchContainer = document.querySelector('.search-container');
+  const navmain = document.querySelector('.nav-menu'); // select all nav items
+
+
+  console.log('Toggle button:', searchToggle);
+  console.log('Search container:', searchContainer);
+
+  searchToggle.addEventListener('click', () => {
+      searchContainer.classList.toggle('active');
+          // toggle visibility of all nav items
+    navmain.classList.toggle('search-open');
+
+    });
+});
+</script>
