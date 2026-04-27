@@ -1,0 +1,720 @@
+.navbar {
+  background-color: #ffffff;
+  color: $primary-blue;
+}
+
+.navbar__brand{
+  padding: 8px 0px;
+      z-index: 10000;
+          margin-right: auto;
+
+              display: flex;
+    align-items: center;
+
+  img {
+    max-width: 120px;
+
+    @include desktop{
+      max-width: 150px;
+    }
+
+    @include largedesktop{
+      max-width: 180px;
+    }
+  }
+}
+
+#home-link{
+  @include desktop{
+      display:none;
+  }
+}
+ 
+.navbar__container {
+  max-width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+
+    box-sizing: border-box;
+    padding: 0px $sidepad-mob;
+   
+    @include tablet {
+      padding: 0px $sidepad-mob;
+    }
+
+    @include desktop {
+      padding: 0px $sidepad-desk;
+    }
+
+    @include largedesktop {
+       padding: 0px $sidepad-desk;
+    }
+    
+    @include xlargedesktop {
+       padding: 0px 10%;
+    }
+}
+
+
+
+.navbar__toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: none;
+
+    .back-button{
+      position: absolute;
+      display: none;
+      left: 15px;
+      top: 29px;
+
+      svg path{
+        fill: $navy-blue;
+      }
+    }
+
+    .subscribe-link{
+      opacity: 1;
+    }
+}
+
+        .navbar__toggle .hamburger {
+          width: 18px;
+          height: 2px;
+          background: $navy-blue;
+          position: relative;
+          display: block;
+          border-radius: 10px;
+          transition: .3s;
+        }
+
+        .navbar__toggle .hamburger::before,
+        .navbar__toggle .hamburger::after {
+          content: "";
+          position: absolute;
+          width: 100%;
+          height: 2px;
+          background: $navy-blue;
+          transition: 0.3s;
+          left: 0;
+          border-radius: 10px;
+        }
+
+        .navbar__toggle .hamburger::before {
+          top: -6px;
+        }
+        .navbar__toggle .hamburger::after {
+          top: 6px; 
+        }
+
+        .navbar__toggle.open-menu {
+
+          .hamburger{
+            height: 0;
+            width: 18px;
+
+            &::before{
+              transform: rotate(45deg);
+              top: 0px;
+              transition: .3s;
+            }
+
+            &::after{
+              transform: rotate(-45deg);
+              top: 0px;
+              transition: .3s;
+            }
+          }
+
+          .search-link, .subscribe-link{
+            opacity: 0;
+          }
+
+          .back-button.visible{
+            position: absolute;
+            display: block;
+            left: 15px;
+            top: 29px;
+
+            svg path{
+              fill: $navy-blue;
+            }
+          }
+        }
+
+        .nav-menu.open + .search-wrap { opacity:0 !important; }
+        .nav-menu.open  + .search-wrap { opacity:1; }
+
+
+
+
+
+.nav-menu {
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  @include desktop{
+    gap: 0px;
+    margin-left: auto;
+  }
+
+  @include largedesktop {
+    gap: 10px;
+  }
+
+  &.search-open{
+    gap: 0px;
+  }
+
+  .nav-item {
+    position: relative;
+
+     @include p-bold($dark-gray);
+
+     // @include desktop{
+     //  font-size:16px !important;
+     // }
+
+     @include desktop {
+        font-size: 14px;
+      }
+
+       @include largedesktop {
+        @include p-bold($dark-gray);
+      }
+
+    &.has-button{
+        padding: 0px 0px;
+    }
+
+    a { 
+      text-decoration: none;
+      padding: 15px 10px;
+      display: flex;
+
+      @include tablet{
+        padding: 22px 10px;
+      }
+
+
+      @include p-bold($dark-gray);
+
+      @include desktop {
+        font-size: 14px;
+      }
+
+
+      @include largedesktop {
+        padding: 22px 15px;
+        @include p-bold($dark-gray);
+      }
+
+      &.button{
+        z-index: 2000;
+        position: relative;
+        @include button($primary-blue, $white);
+        border-radius: 40px;
+
+        padding: 12px 15px;
+
+        @include largedesktop{
+          padding: 12px 24px;
+        }
+
+        p{
+          @include p-bold($light);
+        }
+
+        &:hover{
+          border-bottom: 0px solid $primary-blue;
+        }
+      }
+
+      &:hover{
+        color: $primary-blue;
+        box-shadow: inset 0 -8px 0 0 $primary-blue;
+        //border-bottom: 8px solid $primary-blue;
+      }
+    }
+
+    &.search{
+      a:hover{
+        border-bottom: 0px solid $primary-blue;
+        cursor: pointer;
+      }
+    }
+
+    &.has-dropdown{
+      a:hover{
+        color: $primary-blue;
+        // border-bottom: 0px solid $primary-blue;
+       box-shadow: inset 0 0 0 0 $primary-blue;
+      }
+    }
+
+    &.hidden{
+      display:none;
+    }
+  }
+}
+
+
+.nav-menu .nav-item.has-dropdown .dropdown {
+    display: block;
+    position: relative;
+    background: none;
+    // top: 0;
+    // left: 0;
+    // z-index: 4000;
+    // padding: 0px;
+    width: auto;
+    height: auto;
+      //margin-top: 15px;
+
+      font-size:14px;
+
+  @include desktop {
+    font-size:16px;
+    font-size:inherit;
+    display: none;
+    position: absolute;
+    background: #ffffff;
+    top: 100%;
+    left: -15px; //SAME AS PADDING
+    z-index: 1000;
+    padding: 50px 30px 40px;
+    width: 225px;
+    margin-top: 0px;
+    height: auto;
+  }
+
+  a{
+    box-shadow: inset 0 -3px 0 0 transparent;
+    //box-shadow: inset 0 0 0 3px transparent;
+    //border-bottom: 3px solid transparent;
+  }
+
+  a:hover{ // a:hover p
+    background: $light-gray !important;
+    box-shadow: inset 0 -3px 0 0 $primary-blue;
+        //box-shadow: inset 0 0 0 3px $primary-blue;
+
+    //border-bottom: 3px solid $primary-blue;
+    transition:.3s;
+  }
+
+ 
+
+  ul{
+    list-style: none;
+    margin: 0px !important;
+    padding: 0px !important;
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0px;
+
+    @include desktop{
+      gap: 20px;
+    }
+
+    li{
+      margin: 0px;
+      padding: 10px 10px;
+
+      @include desktop{
+        padding: 0px;
+      }
+
+      &:last-child{margin-bottom:0px;}
+      
+      a{
+        @include p($dark-gray);
+        padding: 0px;
+        transition:.3s;
+        font-size: 14px;
+
+        @include desktop{
+          font-size: 16px;
+        }
+      }
+
+      a:hover, a:hover p{
+        //background: $light-gray !important;
+        transition:.3s;
+
+        border-bottom: 5px solid navy;
+        padding-bottom: 5px;
+      }
+    }
+  }
+}
+
+//// SHOW DROP DOWN
+@include desktop{
+  .nav-menu .nav-item.has-dropdown:hover .dropdown {
+    display: block;
+  }
+
+  .quick-links-nav{
+      display:none;
+    }
+}
+
+@include desktop {
+  .nav-item a.active { 
+    @include p-bold($primary-blue);
+
+      box-shadow: inset 0 -8px 0 0 $primary-blue;
+    //border-bottom: 8px solid $primary-blue;
+  }
+}
+
+
+
+
+
+/* Responsive styles */
+@media (max-width: 1024px) {
+  .navbar__toggle {
+    display: block;
+    z-index: 5000;
+
+      display: flex;
+      align-items:center;
+      gap: 18px;
+
+      div{
+        display:flex;
+        align-items:center;
+      }
+  }
+  .nav-menu {
+    flex-direction: column;
+    width: 100%;
+    display: none;
+  }
+  .nav-menu .nav-item {
+    width: 100%;
+  }
+  .nav-menu .nav-item .dropdown {
+    position: static;
+    background: #444;
+  }
+  .nav-menu .nav-item.open .dropdown {
+    display: block;
+  }
+  .nav-menu.open {
+    display: flex;
+
+
+  /// MOBILE NAV SET UP
+    position: fixed;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 4000;
+    padding: 25% 20px;
+    box-sizing: border-box;
+
+    justify-content: flex-start;
+    gap: 0px;
+
+    @include tablet{
+      gap: 30px;
+    }
+
+    @include desktop{
+      gap: 40px;
+    }
+
+    .subscribe, .search-wrap{
+      display:none;
+    }
+
+  }
+
+  .nav-menu .nav-item.open .dropdown{
+    /// MOBILE NAV SET UP
+    position: fixed;
+    top: 0px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: white;
+    z-index: 500000;
+    width: 100%;
+    padding:60px 20px;
+    box-sizing: border-box;
+  }
+
+  .quick-links-nav{
+    width: 100%;
+    gap: 10px;
+    display: grid;
+
+    div.flex-item{
+      a{
+        @include p-semi($dark-gray);
+        text-decoration: none;
+      }
+    }
+  }
+}
+
+
+
+.nav-trigger{
+  position: absolute;
+  top: 20px;
+    right: 9px;
+    width: 37px;
+    height: 25px;
+
+  border: 0px solid red;
+
+  @include tablet {
+        top: 21px;
+    right: 7px;
+  }
+
+  @include desktop {
+    top: 31px;
+    right: 47px;
+  }
+}
+
+
+.search-wrap{
+  margin-left:auto;
+  
+  @include desktop{
+    margin-left:0px;
+  }
+}
+
+
+a.search-toggle{
+  background: none;
+  border: none;
+  position: relative;
+  z-index: 300000;
+
+  margin-left: auto;
+  margin-right:18px;
+      margin-top: 8px;
+
+   @include desktop {
+      margin-right:12px;
+      margin-left: 20px;
+   }
+
+   @include largedesktop {
+      margin-right:0px;
+      margin-left: 20px;
+   }
+}
+
+
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin: 10px 0px;
+
+  @include desktop {
+    margin: 0px 0px;
+  }
+
+  .submit-button{
+    display:none;
+  }
+}
+
+
+
+
+.search-input {
+    width: 0;
+    opacity: 0;
+    padding: 5px 10px;
+    transition: width 0.3s ease;
+    border: 0px solid #ccc;
+    border-radius: 4px;
+    z-index: 10000;
+    position: absolute;
+    top: -12px;
+    left: -20px;
+} 
+
+.search-container.active .search-toggle{
+  position: absolute;
+  right: 0px;
+}
+
+
+.search-container.active .search-input {
+    opacity: 1;
+    padding: 5px 10px;
+    transition: width 0.3s ease;
+    position: relative;
+    right: 5px;
+    left: auto;
+    width: 80px;
+    z-index: 30000;
+    height: 100%;
+    padding: 10px 40px 10px 20px;
+    border-radius: 100px;
+    top: 0px;
+    background: $light-gray;
+    @include p($dark-gray);
+
+    @include tablet{
+      width: 200px;
+    }
+
+    @include desktop{
+      width: 90px;
+      right: -1px;
+       padding: 10px 40px 10px 15px;
+       font-size: 14px;
+    }
+
+    @include largedesktop{
+      width: 200px;
+      right: -15px;
+       @include p($dark-gray);
+    }
+}
+
+
+
+#emergency-bar {
+  background: #490E0A;
+  position: relative;
+  background: linear-gradient(90deg, rgba(73, 14, 10, 1) 0%, rgba(156, 27, 19, 1) 80%);
+
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr;
+  gap:20px;
+  padding: 20px $sidepad-mob;
+
+  @include tablet {
+    padding: 20px $sidepad-mob;
+  }
+
+  @include desktop {
+    padding: 20px $sidepad-desk;
+  }
+
+  @include largedesktop {
+     padding: 20px $sidepad-desk;
+  }
+  
+  @include xlargedesktop {
+     padding: 20px 10%;
+  }
+
+  @include mini {
+     grid-template-columns: 1fr 2fr;
+  }
+
+
+  @include tablet{
+    grid-template-columns: 1fr 4fr;
+  }
+ 
+  h6{
+    @include h6($white);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  p{
+    @include p($white);
+  }
+
+  div img{
+    max-width: 90%;
+    border-radius:20px;
+    @include mini{
+       max-width: 100%;
+    }
+  }
+
+  a.button{
+    margin-top: 10px;
+    @include button($light-blue, $primary-blue, solid);
+
+    &:hover{
+      @include button($white, $primary-blue, solid);
+      background-color: $white !important;
+    }
+  }
+
+  a.button:nth-of-type(2) {
+    margin-top: 10px;
+    margin-left: 15px;
+    @include button($white, $white, outline);
+
+    &:hover{
+      @include button($white, $primary-blue, solid);
+    }
+  }
+
+  #close-btn {
+    position: absolute;
+    top: 20px;
+    right: 25px;
+    border: none;
+    background: transparent;
+    font-size: 1.2em;
+    cursor: pointer;
+    color: white;
+
+    @include tablet{
+      top: 35px;
+      right: 50px;
+    }
+  }
+}
+
+
+
+
+
+///// SUBSCRIBE STUFF
+
+.subscribe-link{
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+
+// sticky nav
+.navbar--sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(0); }
+}

@@ -1,0 +1,14 @@
+<script type="text/javascript">
+var viewer=document.querySelector('.resource-pdf-viewer');
+if(viewer){
+var loader=document.createElement('div');
+loader.className='loader-overlay';
+var spinner=document.createElement('div');
+spinner.className='spinner';
+loader.appendChild(spinner);
+viewer.appendChild(loader);
+var iframe=viewer.querySelector('iframe');
+iframe.addEventListener('load',function(){loader.style.display='none'});
+setTimeout(function(){loader.style.display='none'},10000);
+}
+</script>

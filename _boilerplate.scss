@@ -1,0 +1,171 @@
+///// ///// ///// ///// ///// ///// ///// ///// ///// ///// 
+///// ///// ///// ///// ///// ///// ///// ///// ///// ///// 
+///// THIS IS MOSTLY THINGS THAT UNDO THE EXISTING FEDWEB CODE GLOBALLY
+///// ///// ///// ///// ///// ///// ///// ///// ///// ///// 
+///// ///// ///// ///// ///// ///// ///// ///// ///// ///// 
+
+
+h1, h2, h3, h4, h5, h6, p {
+  font-variant-ligatures: none;
+}
+
+.col-1, .col-10, .col-11, .col-12, .col-2, .col-3, .col-4, .col-5, .col-6, .col-7, .col-8, .col-9{
+	margin:0px;
+}
+
+html {
+  scroll-behavior: smooth;
+} 
+
+.col-12{
+	width:100%;
+}
+
+.page-main .component-divider.component-divider{
+	padding-top: 0px !important;
+}
+
+.shell{
+	max-width: none !important;
+	padding: 0;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.hovering-side-bar{margin-top: 0px !important;}
+
+
+.shell.full-width-shell{
+	width:100%;
+	@include desktop {
+		max-width: none;
+	}
+}
+
+.row{
+	margin-left: 0px;
+}
+
+.row:not(.row-full-width) .component-promo.right-left-no-spacing{
+	margin: 0px !important;
+}
+
+.component-promo:not(.btn-anchored).overlay-horizontal-position-middle.overlay-vertical-position-bottom .bg-type-image {
+    bottom: 0;
+    left: 0;
+    transform: none;
+}
+
+.row-has-promo:not(.row-full-width)>[class^=col-]:first-child{
+	margin-left: 0px !important;
+}
+
+.page-main{
+	padding: 0px;
+}
+
+header.page-header{display: none; max-width: none;
+    width: 100%;}
+.header-wrap, .navs, div.navs nav{display:none;}
+.page-wrapper{margin-top: 0px !important;}
+
+
+.component-container>:last-child {
+	margin-bottom: 0px !important;
+}
+
+.hovering-side-bar{
+	margin-top: 0px;
+}
+
+a{
+	transition: .3s;
+}
+
+.mobile-only{
+	@include tablet {
+		display: none;
+	}
+}
+
+.mobile-hide{
+	display: none;
+	@include tablet {
+		display: inherit;
+	}
+}
+
+.mobile-hide-btn{
+	.row .col-12 .component-button .button.btn-black{
+		display: none !important;
+
+		@include tablet {
+			display: block !important;
+		}
+	}
+}
+
+.mobile-only .row .col-12 .component-button .button.btn-black{
+	margin-top: 0px;
+}
+
+
+.row:is([class*="flex"], [class*="grid"])::after {
+  display: none;
+  content: none;
+}
+
+.footer-push{
+	display: none;
+}
+
+.page-footer .footer-section>.footer-column{
+	margin: 0px !important;
+	padding: 0px !important;
+}
+
+footer, footer section{
+	display: inline;
+}
+
+.page-wrapper{
+	margin: 0 auto;
+	/// JUST ADDED 12-23
+	    min-height: auto !important;
+}
+
+.component-divider .line, .component-divider[data-line-color=dark] .line{
+	background-color: $medium-gray;
+}
+
+.component-divider[data-height=medium] .line-container{
+	padding: 0px;
+}
+
+
+.breadcrumbs{
+	display: none;
+}
+
+
+.hide-for-mobile{
+	display: none;
+@include desktop{
+		display: block;
+	}
+}
+
+.hide-for-desktop{
+	@include desktop{
+		display: none;
+	}
+}
+
+.hide-for-all{
+	display:none;
+}
+
+
+
+
+

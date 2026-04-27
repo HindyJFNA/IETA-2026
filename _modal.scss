@@ -1,0 +1,455 @@
+.modals{
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+
+	.row{
+ 
+		display: grid;
+		// gap: 5px;
+		grid-template-columns: 1fr;
+
+		@include tablet{
+			grid-template-columns: 1fr 1fr;
+			// gap:30px;
+		}
+
+		@include desktop{
+			// gap: 40px;
+			grid-template-columns: 1fr 1fr 1fr 1fr;
+		}
+
+		@include largedesktop{
+			// gap: 60px;
+			grid-template-columns: 1fr 1fr 1fr 1fr;
+		}
+	}
+
+	/// I WANT TO DEPRICATE THIS ONE
+	&.two-up .row{
+		display: grid;
+		align-items: start;
+		grid-template-columns: 1fr 1fr;
+		gap: 30px 10px;
+
+		@include tablet{
+			gap: 20px 20px;
+			grid-template-columns: 1fr 1fr 1fr;
+		}
+
+		@include desktop{
+			gap: 40px 40px;
+			grid-template-columns: 1fr 1fr 1fr 1fr;
+		}
+	}
+
+	&.two-up-small .row{
+		display: grid;
+		align-items: start;
+		grid-template-columns: 1fr;
+
+		grid-template-areas:
+		  "first" 
+		  "second";
+
+		  	gap: 10px;
+
+		@include mini{
+			grid-template-areas:
+		  "first second";
+			gap: 20px;
+			grid-template-columns: 1fr 1fr;
+		}
+
+		@include desktop{
+			gap: 40px;
+			grid-template-areas:
+		  ". first second .";
+			grid-template-columns: 1fr 1fr 1fr 1fr;
+		}
+
+		.col-6:first-child{
+			grid-area: first;
+		}
+		.col-6:nth-child(2){
+			grid-area: second;
+		}
+	}
+
+
+	&.four-up .row{
+		display: grid;
+		align-items: start;
+		grid-template-columns: 1fr 1fr;
+		gap: 30px 10px;
+
+		@include mini{
+			gap: 30px 20px;
+		}
+
+		@include tablet{
+			gap: 20px 20px;
+			grid-template-columns: 1fr 1fr;
+		}
+
+		@include desktop{
+			gap: 40px 40px;
+			grid-template-columns: 1fr 1fr 1fr 1fr;
+		}
+	}
+
+
+
+	&.two-modals .row{
+		grid-template-columns: 1fr;
+
+		@include desktop{
+			gap: 68px;
+			grid-template-columns: 3fr 1fr 3fr 1fr;
+		}
+	}
+
+	&.one-modals .row{
+		grid-template-columns: 1fr;
+
+		@include desktop{
+			gap: 68px;
+			grid-template-columns: 6fr 1fr 1fr 0fr;
+
+			.col-3{
+			    display: flex;
+			    gap: 20px;
+			    align-items: center;
+			    > div {flex: 1;}
+			}
+		}
+	}
+
+
+	.col-3, .col-6{
+		width: 100%;
+		transition:.3s;
+
+		.component-image{
+			margin-bottom: 15px;
+
+			.aspect-ratio{
+				border-radius: 24px;
+				overflow: hidden;
+
+			}
+		}
+
+		.component-class-richtext{
+			.rich-text{
+			    margin-bottom: 0px;
+			    text-align: left;
+
+			    h6{
+			    	margin-top: 10px;
+			    }
+
+			    @include desktop {
+			    	text-align: left;
+			    }
+			}
+
+			h5{
+				@include h5($dark-gray);
+				margin-top: 20px;
+			}
+
+
+
+			p{
+				color: #000000;
+				margin-top: 0px;
+				@include desktop {
+			    	margin-top: 10px;
+			    }
+			}
+		}
+		.component-class-wysiwyg{
+			display: none;
+		}
+	}
+
+	&.enabled{
+		.col-3, .col-6{
+			&:hover{
+				cursor: pointer;
+				transition:.3s;
+				transform: scale(1.02);
+			}
+		}
+	}
+}
+
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10001;
+  align-items: center;
+  justify-content: center;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.modal-content {
+  background: #fff;
+  @include responsive-padding;
+
+  width: 85%;
+  height:80%;
+  max-height: 80%;
+  overflow: scroll;
+    
+  border-radius: 24px;
+  position: relative;
+
+  #modal-body{
+  	display: grid;
+  	grid-template-columns:1fr;
+  	grid-template-areas: 
+  	"image"
+  	"title"
+  	"bio";
+  	grid-gap: 20px;
+
+  	@include tablet {
+  		grid-template-columns:auto 1fr;
+	  	grid-template-areas: 
+	  	"image title"
+	  	"bio bio";
+	  	grid-gap: 20px;
+  	}
+
+  	.component-image{
+  		grid-area: image;
+			margin-bottom: 10px;
+			width: 200px;
+
+			.aspect-ratio{
+				// aspect-ratio: 1/1;
+				border-radius: 24px;
+				overflow: hidden;
+			}
+		}
+
+		.component-class-richtext{
+			grid-area: title;
+
+			.rich-text{
+				display: flex;
+				flex-direction: column;
+				align-items: flex-start;
+				justify-content:center;
+				height: 100%;
+
+				*{margin:0px;}
+
+				@include desktop {
+					gap: 10px;
+				}
+
+				h5 {
+					@include h3($primary-blue);
+					margin-bottom: 10px;
+				}
+
+				p{
+					@include h5($dark-gray);
+				}
+			}
+		}
+
+		.component-class-wysiwyg{
+			grid-area: bio;
+			.editor-copy{ 
+				margin-bottom: 0px;
+				p:last-child {
+					padding-bottom: 0px;
+				}
+			}
+		}
+  }
+}
+
+
+
+#modal-subscribe, #modal-contact{
+	z-index: 310001;
+
+	.close {
+	  position: absolute;
+	  top: 15px;
+		right: 20px;
+		font-size: 30px;
+	  cursor: pointer;
+	}
+}
+
+#modal-subscribe .modal-content, #modal-contact .modal-content {
+  background: #fff;
+  @include responsive-padding;
+
+  // width: 95%;
+  // max-height: 90%;
+  overflow: scroll;
+    
+  // border-radius: 24px;
+  position: relative;
+
+
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+        max-height: 100%;
+        border-radius: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+  @include tablet{
+  	 width: 90%;
+        height: 90%;
+        border-radius: 20px;
+  }
+
+  @include desktop{
+  	width: 90%;
+        height: 90%;
+  }
+
+  @include largedesktop{
+  	width: 80%;
+        height: 85%;
+  }
+
+	#modal-body-subscribe, #modal-body-contact{
+	  	display: grid;
+	  	grid-template-columns:1fr;
+	  	grid-gap: 10px;
+
+	  	@include desktop {
+	  		grid-gap:15px;
+	  	}
+
+	  	.modal-logo {
+	  		text-align: center;
+		  		img{
+		  		width: 120px;
+		  		text-align:center;
+		  		margin: 0 auto;;
+		  	} 
+		  }
+
+		  h3, p{
+		  	text-align:center;
+		  	width: 90%;
+		  	margin: 0 auto;
+
+		  	@include tablet{
+		  		width: 80%;
+		  	}
+		  }
+
+		  h3{ color: $primary-blue;}
+
+			p{
+				padding: 0px;
+			}
+
+			.jotform-form button{
+				@include p($white);
+				padding: 10px 24px;
+			}
+
+			.component-class-richtext{
+				grid-area: title;
+
+				.rich-text{
+					display: flex;
+					flex-direction: column;
+					align-items: flex-start;
+					justify-content:center;
+					height: 100%;
+
+					*{margin:0px;}
+
+					@include desktop {
+						gap: 10px;
+					}
+
+					h5 {
+						@include h3($primary-blue);
+						margin-bottom: 10px;
+					}
+
+					p{
+						@include h5($dark-gray);
+						width:100%;
+						padding: 0px;
+					}
+				}
+			}
+
+
+			.jotform-form input, .jotform-form textarea{
+				margin-top: 2px;
+				    font-size: 16px;
+				    padding: 8px 8px;
+			}
+
+			.component-class-wysiwyg{
+				grid-area: bio;
+				.editor-copy{ 
+					margin-bottom: 0px;
+					p:last-child {
+						padding-bottom: 0px;
+					}
+				}
+			}
+	  }
+	}
+
+
+
+
+
+
+.close {
+  position: absolute;
+  top: 15px;
+	right: 20px;
+	font-size: 30px;
+  cursor: pointer;
+
+
+  position: fixed;
+    top: 13%;
+    right: 14%;
+
+  @include tablet{
+	top: 13%;
+    right: 10%;
+  }
+
+   @include desktop{
+   	top: 13%;
+    right: 10%;
+  }
+}
+
+/* Just for visual demo */
+.modal-trigger {
+  cursor: pointer;
+}
+
+
+.subscribe-link{
+	    display: flex !important;
+}
